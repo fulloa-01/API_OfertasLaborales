@@ -79,13 +79,28 @@ exports.getOfertaById = async (req, res) => {
 // Actualizar una oferta laboral
 exports.updateOferta = async (req, res) => {
     const { id } = req.params;
-    const { titulo, nivelAlcanzado, departamento, anosExperiencia, detalle, salario, vacantes, ubicacionGeografica, aceptaExtranjeros } = req.body;
+    const { Titulo, NivelAlcanzado, Departamento, AnosExperiencia, Detalle, Salario, Vacantes, UbicacionGeografica, AceptaExtranjeros } = req.body;
+    console.log(req.body);
+    // Asignar null si el valor es undefined
+    const values = [
+        Titulo || null,
+        NivelAlcanzado || null,
+        Departamento || null,
+        AnosExperiencia || null,
+        Detalle || null,
+        Salario || null,
+        Vacantes || null,
+        UbicacionGeografica || null,
+        AceptaExtranjeros || null,
+        id
+    ];
+    
     try {
         const result = await db.execute(
             `UPDATE Ofertas
              SET Titulo = ?, NivelAlcanzado = ?, Departamento = ?, AnosExperiencia = ?, Detalle = ?, Salario = ?, Vacantes = ?, UbicacionGeografica = ?, AceptaExtranjeros = ?
              WHERE OfertaID = ?`,
-            [titulo, nivelAlcanzado, departamento, anosExperiencia, detalle, salario, vacantes, ubicacionGeografica, aceptaExtranjeros, id]
+            values
         );
         if (result[0].affectedRows === 0) {
             return res.status(404).send({ message: 'Oferta no encontrada' });
@@ -96,6 +111,7 @@ exports.updateOferta = async (req, res) => {
         res.status(500).send({ message: 'Error al actualizar la oferta', error });
     }
 };
+
 
 // Eliminar una oferta laboral
 exports.deleteOferta = async (req, res) => {
